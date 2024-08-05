@@ -1,0 +1,38 @@
+.img{
+    height: 45px;
+    width: 70px;
+    margin: 5px 5px;
+    border-radius: 3px;
+}
+
+.card-flex{
+    display: flex !important;
+    justify-content: space-between; 
+}
+
+.item-name{
+    width: 200px !important;
+    margin: 0px;
+    align-items: center;
+    padding: 14px 0px 0px 0px !important;
+}
+
+.item-val{
+    width: 120px !important;
+    margin: 0px;
+    align-items: center;
+    padding: 14px 0px 0px 0px !important;
+}
+
+.item-inc-dec{
+    width: 120px !important;
+    margin: 0px;
+    align-items: center;
+    padding: 10px 0px 0px 0px !important;
+}
+
+.item-remove{
+    margin: 0px;
+    align-items: center;
+    padding: 12px 0px 0px 0px !important;
+}
