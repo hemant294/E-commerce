@@ -30,6 +30,8 @@ class Header extends Component {
   handleSearchSubmit = (e) => {
     e.preventDefault();
     this.props.searchData(this.state.search)
+    this.props.navigate("/");
+
   }
 
   render() {

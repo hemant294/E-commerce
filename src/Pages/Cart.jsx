@@ -1,21 +1,25 @@
 // components/Cart.js
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { MdDelete } from 'react-icons/md';
-import './Cart.css';
-import { removeFromCart, increaseCartQty, decreaseCartQty } from '../Redux/Action/cartAction';
-import PriceCount from '../components/PriceCount';
-import SelectSingleColor from '../components/SelectSingleColor';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { MdDelete } from "react-icons/md";
+import "./Cart.css";
+import {
+  removeFromCart,
+  increaseCartQty,
+  decreaseCartQty,
+} from "../Redux/Action/cartAction";
+import PriceCount from "../components/PriceCount";
+import SelectSingleColor from "../components/SelectSingleColor";
+import withRouter from "../Router/withRouter";
 
 class Cart extends Component {
   constructor(props) {
     super(props);
-    // Initialize local state with quantities from props
     this.state = {
       quantities: this.props.cart.cart.reduce((acc, item) => {
-        acc[item.id] = item.qty || 1; // Default to 1 if qty is not set
+        acc[item.id] = item.qty || 1; 
         return acc;
-      }, {})
+      }, {}),
     };
   }
 
@@ -28,8 +32,8 @@ class Cart extends Component {
       (prevState) => ({
         quantities: {
           ...prevState.quantities,
-          [id]: Math.max((prevState.quantities[id] || 1) - 1, 1) // Ensure qty does not go below 1
-        }
+          [id]: Math.max((prevState.quantities[id] || 1) - 1, 1), // Ensure qty does not go below 1
+        },
       }),
       () => {
         this.props.decreaseCartQty(id);
@@ -42,14 +46,18 @@ class Cart extends Component {
       (prevState) => ({
         quantities: {
           ...prevState.quantities,
-          [id]: (prevState.quantities[id] || 1) + 1
-        }
+          [id]: (prevState.quantities[id] || 1) + 1,
+        },
       }),
       () => {
         this.props.increaseCartQty(id);
       }
     );
   };
+
+  handleRedirect = (id) => {
+    this.props.navigate(`/product/${id}`);
+  }
 
   render() {
     const { cart, currentUser } = this.props;
@@ -64,9 +72,9 @@ class Cart extends Component {
         <div className="row mt-2">
           <div className="col-8">
             {carts.map((item) => (
-              <div key={item.id} className="card m-2">
+              <div key={item.id} className="card m-2" >
                 <div className="card-flex">
-                  <div className="d-flex">
+                  <div className="d-flex" onClick={() => this.handleRedirect(item.id)}>
                     <div>
                       <img src={item.image} className="img" alt="" />
                     </div>
@@ -97,10 +105,14 @@ class Cart extends Component {
                       </p>
                     </div>
                     <div className="item-val">
-                      <p>{(this.state.quantities[item.id] || 1) * (item.price)}</p>
+                      <p>
+                        {(this.state.quantities[item.id] || 1) * item.price}
+                      </p>
                     </div>
                     <div className="item-val">
-                      <SelectSingleColor color={item.colors[cart.selectColor]} />
+                      <SelectSingleColor
+                        color={item.colors[cart.selectColor]}
+                      />
                     </div>
                   </div>
                   <div className="item-remove">
@@ -117,15 +129,18 @@ class Cart extends Component {
           {carts.length >= 1 ? (
             <div className="col-4">
               <h5>Total billing</h5>
-              <div className="card" style={{ width: '18rem' }}>
+              <div className="card" style={{ width: "18rem" }}>
                 <div className="card-body">
                   {carts.map((item) => (
-                    <div className="d-flex justify-content-between" key={item.id}>
+                    <div
+                      className="d-flex justify-content-between"
+                      key={item.id}
+                    >
                       <h6 className="card-subtitle mb-2 text-body-secondary">
                         {item.name}:
                       </h6>
                       <h6 className="card-subtitle mb-2 text-body-secondary">
-                        {(this.state.quantities[item.id] || 1) * (item.price)}
+                        {(this.state.quantities[item.id] || 1) * item.price}
                       </h6>
                     </div>
                   ))}
@@ -156,4 +171,4 @@ const mapDispatchToProps = {
   decreaseCartQty,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Cart);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Cart));

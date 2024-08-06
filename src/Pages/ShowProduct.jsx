@@ -21,7 +21,11 @@ class ShowProduct extends Component {
   }
 
   handleAddToCart = (product) => {
-    this.props.addToCart(product);
+    if (!this.props.currentUser.isLogin) {
+      alert("Please Login...");
+    } else {
+      this.props.addToCart(product);
+    }
   };
 
   handleRemoveFromCart = (productId) => {
@@ -41,8 +45,7 @@ class ShowProduct extends Component {
   };
 
   render() {
-    const { products } = this.props;
-    const { showProduct } = this.props;
+    const { showProduct, currentUser } = this.props;
     const { imageShow } = this.state;
 
     if (!showProduct || !showProduct.image || showProduct.image.length === 0) {
@@ -56,9 +59,9 @@ class ShowProduct extends Component {
         <div className="row">
           <div className="col-2"></div>
           <div className="col-8 mt-5">
-            <div className="d-flex ">
+            <div className="d-flex">
               <div className="image-list">
-                {showProduct.image?.map((img) => (
+                {showProduct.image.map((img) => (
                   <div key={img.id} className="image-item">
                     <img
                       src={img.url}
@@ -70,7 +73,7 @@ class ShowProduct extends Component {
                   </div>
                 ))}
               </div>
-              <div className="full-size-image-container ">
+              <div className="full-size-image-container">
                 {showProduct.image.map((img) =>
                   imageShow === img.id ? (
                     <div key={img.id} className="full-size-image">
@@ -88,12 +91,12 @@ class ShowProduct extends Component {
                   </div>
                 )}
               </div>
-              <div className=" float-right product-content">
+              <div className="product-content">
                 <h4 className="text-body-secondary">{showProduct.name}</h4>
                 <p>{showProduct.company}</p>
                 <div className="d-flex">
-                <ProductReating stars={showProduct.stars} />
-                <p className="ps-5">reviews: {showProduct.reviews}</p>
+                  <ProductReating stars={showProduct.stars} />
+                  <p className="ps-5">reviews: {showProduct.reviews}</p>
                 </div>
                 <p>Price: {showProduct.price}</p>
                 <div className="color">
@@ -101,6 +104,13 @@ class ShowProduct extends Component {
                 </div>
                 <p className="overflow-hidden discription">
                   {showProduct.description}
+                </p>
+                <p className="overflow-hidden discription">
+                  {showProduct.stock >= 1 ? (
+                    <h1>In Stock</h1>
+                  ) : (
+                    <h1>Out of stock</h1>
+                  )}
                 </p>
                 {this.isInCart(showProduct.id) ? (
                   <button
@@ -136,6 +146,7 @@ const mapStateToProps = (state) => ({
   showProduct: state.showProduct,
   products: state.products,
   cart: state.cart.cart,
+  currentUser: state.currentUser,
 });
 
 const mapDispatchToProps = {

@@ -58,11 +58,20 @@ const ProductReducer = (state = initialState, action) => {
 
     case "SEARCH_DATA":
       const searchData = action.payload;
+      console.log("searchData", searchData);
+      console.log("state", state);
       const filterSearchItem = state.products.filter(
-        (item) => item.company.toLowerCase() === searchData.toLowerCase() ||
-        item.category.toLowerCase() === searchData.toLowerCase() ||
-        item.name.toLowerCase() === searchData.toLowerCase()
+        (item) =>
+          searchData.toLowerCase().includes(item.category) ||
+          searchData.toLowerCase().includes(item.company) ||
+          searchData.toLowerCase().includes(item.name)
       );
+      if (!searchData) {
+        return {
+          ...state,
+          filteredProducts: state.products
+        };
+      }
       return {
         ...state,
         filteredProducts: filterSearchItem,
